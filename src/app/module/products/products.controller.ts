@@ -26,12 +26,16 @@ const getSingleProduct = catchAsync(async (req, res) => {
   const { productId } = req.params;
   console.log(productId);
   const result = await ProductService.getSingleProductFromDB(productId);
-  sendResponse(res, {
-    statusCode: httpStatus.OK,
-    success: true,
-    message: "Single product retrived successfully",
-    data: result,
-  });
+  if (result) {
+    sendResponse(res, {
+      statusCode: httpStatus.OK,
+      success: true,
+      message: "Single product retrived successfully",
+      data: result,
+    });
+  } else {
+    throw new AppError(httpStatus.NOT_FOUND, "Product not found");
+  }
 });
 
 const updateProduct = catchAsync(async (req, res) => {
@@ -46,7 +50,21 @@ const updateProduct = catchAsync(async (req, res) => {
       data: result,
     });
   } else {
-    new AppError(httpStatus.NOT_FOUND, "Product not found");
+    throw new AppError(httpStatus.NOT_FOUND, "Product not found");
+  }
+});
+const deleteProduct = catchAsync(async (req, res) => {
+  const { productId } = req.params;
+  const result = await ProductService.deleteProductIntoDB(productId);
+  if (result) {
+    sendResponse(res, {
+      statusCode: httpStatus.OK,
+      success: true,
+      message: "Product deleted successfully",
+      data: result,
+    });
+  } else {
+    throw new AppError(httpStatus.NOT_FOUND, "Product not found");
   }
 });
 
@@ -55,4 +73,5 @@ export const ProductControllers = {
   getAllProducts,
   getSingleProduct,
   updateProduct,
+  deleteProduct,
 };
