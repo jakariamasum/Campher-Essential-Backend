@@ -7,7 +7,6 @@ const createProductSchemaValidation = z.object({
     description: z.string(),
     category: z.string(),
     stock: z.number(),
-    quantity: z.number(),
     ratings: z.number(),
     image: z.string(),
   }),

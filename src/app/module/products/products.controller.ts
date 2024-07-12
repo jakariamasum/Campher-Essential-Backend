@@ -5,6 +5,7 @@ import { ProductService } from "./products.service";
 import AppError from "../../errors/AppError";
 
 const createProduct = catchAsync(async (req, res) => {
+  console.log(req.body);
   const result = await ProductService.createProductIntoDB(req.body);
   sendResponse(res, {
     statusCode: httpStatus.OK,
@@ -53,6 +54,27 @@ const updateProduct = catchAsync(async (req, res) => {
     throw new AppError(httpStatus.NOT_FOUND, "Product not found");
   }
 });
+
+const updateProductStock = catchAsync(async (req, res) => {
+  const { productId } = req.params;
+  const { quantity } = req.body;
+  const result = await ProductService.updateProductStockIntoDB(
+    productId,
+    quantity
+  );
+  console.log(result);
+  if (result) {
+    sendResponse(res, {
+      statusCode: httpStatus.OK,
+      success: true,
+      message: "Product stock updated successfully",
+      data: result,
+    });
+  } else {
+    throw new AppError(httpStatus.NOT_FOUND, "Product not found");
+  }
+});
+
 const deleteProduct = catchAsync(async (req, res) => {
   const { productId } = req.params;
   const result = await ProductService.deleteProductIntoDB(productId);
@@ -74,4 +96,5 @@ export const ProductControllers = {
   getSingleProduct,
   updateProduct,
   deleteProduct,
+  updateProductStock,
 };
