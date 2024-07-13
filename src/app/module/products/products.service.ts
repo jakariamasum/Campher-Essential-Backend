@@ -8,7 +8,7 @@ const createProductIntoDB = async (payload: TProducts) => {
 };
 
 const getAllProductsFromDB = async () => {
-  const result = await Product.find();
+  const result = await Product.find().sort({ createdAt: -1 });
   return result;
 };
 const getSingleProductFromDB = async (id: string) => {

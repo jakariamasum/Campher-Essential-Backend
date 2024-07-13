@@ -8,6 +8,7 @@ const stripe = new stripeModule(
 const createPayment = async (req: Request, res: Response) => {
   try {
     const { products } = req.body;
+    const quantity = req.body.quantity;
 
     if (!products || !Array.isArray(products)) {
       return res.status(400).json({ error: "Products must be an array" });
@@ -28,9 +29,9 @@ const createPayment = async (req: Request, res: Response) => {
             name: product.product.name,
             images: [product.product.image],
           },
-          unit_amount: Math.round(product.product.price * 100), // Ensure unit_amount is an integer
+          unit_amount: Math.round(product.product.price * 115),
         },
-        quantity: product.quantity,
+        quantity: quantity,
       };
     });
 
@@ -38,14 +39,14 @@ const createPayment = async (req: Request, res: Response) => {
       payment_method_types: ["card"],
       line_items: lineItems,
       mode: "payment",
-      success_url: "http://localhost:5173/success",
-      cancel_url: "http://localhost:5173/cancel",
+      success_url: "https://camp-essential.netlify.app/success",
+      cancel_url: "https://camp-essential.netlify.app/cancel",
     });
 
     res.json({ id: session.id });
   } catch (error) {
     console.error("Error creating payment session:", error);
-    res.status(500).json({ error: error.message });
+    res.status(500).json({ error: "error" });
   }
 };
 
